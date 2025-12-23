@@ -412,19 +412,6 @@ python3 scripts/test_llamaparse_tables.py
 
 ---
 
-## Debug Scripts (Not in Main Pipeline)
-
-All scripts in `debug_scripts/` are for debugging and investigation purposes:
-
-- `test_ef1_detailed.py`, `test_ef2_detailed.py`, etc.: Question-specific testing
-- `investigate_ef2.py`, `investigate_ef2_detailed.py`: Investigation scripts
-- `check_ef2_tables.py`, `check_ef2_retrieval.py`: Diagnostic scripts
-- `debug_value_search.py`, `debug_table_prioritization.py`: Debugging scripts
-
-**Status**: Debug scripts, not part of main pipeline → **Excluded from git**
-
----
-
 ## Execution Order
 
 ### First-Time Setup
@@ -544,49 +531,4 @@ All scripts in `debug_scripts/` are for debugging and investigation purposes:
 - **Fast Mode** (with cached results): ~5-10 seconds
 - **Full Mode** (re-running queries): ~1-5 minutes (depends on question count)
 
----
-
-## Troubleshooting
-
-### Common Issues
-
-1. **"Missing GOOGLE_CLOUD_PROJECT"**:
-   - Check `.env` file exists
-   - Verify environment variable is set
-
-2. **"Missing LLAMA_CLOUD_API_KEY"**:
-   - Required only for `build_indices.py`
-   - Get API key from LlamaCloud
-
-3. **"Indices not found"**:
-   - Run `build_indices.py` first
-   - Check BigQuery dataset exists
-
-4. **"Table upload failed"**:
-   - Check BigQuery permissions
-   - Verify column names are valid
-   - Check DataFrame structure
-
-5. **"Embedding API limit exceeded"**:
-   - Reduce batch size in `vector_store.py`
-   - Wait for rate limit reset
-
----
-
-## Summary
-
-**Main Pipeline Scripts** (tracked in git):
-- ✅ `build_indices.py` - Indexing pipeline
-- ✅ `query_rag.py` - Query script
-- ✅ `src/evaluation/evaluate.py` - Evaluation framework
-
-**Utility/Testing Scripts** (excluded from git):
-- ❌ `scripts/check_gcp_connection.py` - GCP connection test
-- ❌ `scripts/test_llamaparse_tables.py` - LlamaParse testing
-- ❌ `debug_scripts/*` - All debugging scripts
-
-**Execution Order**:
-1. `build_indices.py` (one-time setup)
-2. `query_rag.py` (ongoing queries)
-3. `src/evaluation/evaluate.py` (performance assessment)
 
