@@ -357,7 +357,7 @@ See [RAG Development Journey](GenAI_Prompts/RAG_DEVELOPMENT_JOURNEY.md) for deta
 
 - **[PDF Parsing](src/parsing/README.md)** - LlamaParse and Unstructured integration for extracting text, tables, and charts from PDFs
 - **[Indexing](src/indexing/README.md)** - Building DOC Index (vector store) and FACTS Store (BigQuery tables)
-- **[Retrieval](src/retrieval/)** - RAG agent with hybrid retrieval (semantic + structured)
+- **[Retrieval](src/retrieval/README.md)** - RAG agent with hybrid retrieval (semantic + structured), multi-tier table discovery, and answer generation
 - **[Evaluation](src/evaluation/evaluate.py)** - Comprehensive evaluation framework with custom and RAGAS metrics
 
 ### Architecture and Design
