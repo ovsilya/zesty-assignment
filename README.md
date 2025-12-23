@@ -230,15 +230,45 @@ For a complete breakdown of evaluation metrics, see:
 ```
 .
 ├── src/
-│   ├── parsing/          # PDF parsing and extraction
-│   ├── indexing/         # Index creation (vector store, BigQuery)
-│   ├── retrieval/        # RAG agent and retrieval logic
-│   └── evaluation/      # Evaluation framework
-├── artifacts/            # Questions, results, and evaluation reports
-├── MD_docs/              # Architecture and design documentation
-├── debug_scripts/        # Debugging and investigation scripts
-└── test_results/        # Test outputs
+│   ├── parsing/              # PDF parsing and extraction
+│   │   ├── pdf_parser.py     # LlamaParse + Unstructured integration
+│   │   ├── table_processor.py  # Table normalization and LLM summarization
+│   │   └── README.md         # Parsing module documentation
+│   ├── indexing/            # Index creation (vector store, BigQuery)
+│   │   ├── vector_store.py   # DOC Index builder (vector embeddings)
+│   │   ├── facts_store.py    # FACTS Store builder (BigQuery tables)
+│   │   └── README.md         # Indexing module documentation
+│   ├── retrieval/           # RAG agent and retrieval logic
+│   │   ├── rag_agent.py      # Main RAG agent orchestrator
+│   │   ├── retrieval_logic.py # Core retrieval algorithms
+│   │   ├── utils.py          # Utility functions
+│   │   └── prompt_template_v2.txt  # LLM prompt template
+│   └── evaluation/          # Evaluation framework
+│       ├── evaluate.py       # Comprehensive evaluation metrics
+│       └── __init__.py
+├── artifacts/               # Input data and questions
+│   ├── 1/                   # PDF folder 1 (motorcycle filings)
+│   ├── 2/                   # PDF folder 2 (homeowner filings)
+│   ├── questions.csv        # Evaluation questions and expected outputs
+│   └── README.md            # Human reasoning steps for questions
+├── results_evaluation/      # Evaluation results and metrics
+│   ├── questions_results.csv      # Generated answers
+│   ├── evaluation_results.csv     # Detailed metrics
+│   ├── evaluation_report.txt      # Summary report
+│   └── EVALUATION_METRICS.md      # Metrics documentation
+├── GenAI_Prompts/           # Architecture and design prompts
+├── build_indices.py         # Main indexing pipeline script
+├── query_rag.py             # RAG query script (interactive/batch)
+├── requirements.txt         # Python dependencies
+└── README.md                # This file
 ```
+
+**Note:** The following directories are excluded from version control (see `.gitignore`):
+- `debug_scripts/` - Debugging and investigation scripts
+- `scripts/` - Utility/testing scripts (not part of main pipeline)
+- `test_results/` - Test output files
+- `extracted_tables/` - Extracted CSV files
+- `MD_docs/` - Historical documentation
 
 ## Setup
 

@@ -47,6 +47,7 @@ ENV/
 # Testing and debugging
 test_results/
 debug_scripts/
+scripts/
 MD_docs/
 *.log
 *.out
