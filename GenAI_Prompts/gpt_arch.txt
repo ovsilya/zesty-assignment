@@ -1,0 +1,27 @@
+1. Document Preprocessing Layer
+Tooling:
+Unstructured.io, GROBID, and Adobe PDF Extract API for structural parsing.
+LayoutLMv3, Donut, or DocFormer for visual+text segmentation.
+OCR fallback with PaddleOCR for scanned documents.
+Output: JSONL structure containing {text_blocks, tables, figures, metadata}.
+2. Table & List Handling
+Convert each table to:
+Relational format (for structured queries).
+Natural language summaries (“This table lists inventory items by category X…”).
+Vector embeddings using TaBERT or TAPAS.
+Store structured tables in a BigQuery or DuckDB instance, accessible through retrieval plugins or MCP connectors (for hybrid RAG queries).
+3. Indexing Layer
+Text embeddings: OpenAI text-embedding-3-large, E5-Mistral, or Instructor-XL.
+Table embeddings: TAPAS/TaBERT or structure-aware embedding fusion (as in BookRAG).
+Storage:
+Use Qdrant, Weaviate, or Pinecone hybrid indexes (text + metadata + table IDs).
+Complement with a BigQuery MCP endpoint for precise table lookups.
+4. Retriever-Orchestrator
+Combine:
+Dense retrieval (semantic similarity on embeddings)
+Symbolic retrieval (SQL query or graph traversal)
+Cross-modal reranking with ColBERTv2 or bge-reranker-large
+Use an ensemble retriever that scores both textual and structured matches.
+5. RAG Generator
+Use multi-modal LLMs such as GPT-4-turbo, Claude 3 Opus, or open-source Mixtral-8x7B.
+Chain-of-Thought (CoT) prompting with retrieval justification (“Explain using data from Table X in Document Y”).
