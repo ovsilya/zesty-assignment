@@ -1,0 +1,45 @@
+================================================================================
+RAG SYSTEM EVALUATION REPORT
+================================================================================
+Generated: 2025-12-22 19:33:47
+
+SUMMARY STATISTICS
+--------------------------------------------------------------------------------
+Total Questions: 3
+Exact Matches: 0 (0.0%)
+Average Keyword Coverage: 87.9%
+Average Number Match: 92.6%
+Average Answer Completeness: 93.9%
+Average Source Citation Quality: 100.0%
+
+PER-QUESTION RESULTS
+--------------------------------------------------------------------------------
+
+EF_1:
+  Question: List all rating plan rules...
+  Exact Match: False
+  Keyword Coverage: 73.7%
+  Number Match: 100.0%
+  Completeness: 86.8%
+  Source Citation: 100.0%
+  Rules Coverage: 60.6% (20.0/33.0)
+
+EF_2:
+  Question: For a State Farm Fire & Casualty Company policyholder living in Zip Code 89110, ...
+  Exact Match: False
+  Keyword Coverage: 90.0%
+  Number Match: 77.8%
+  Completeness: 95.0%
+  Source Citation: 100.0%
+  Fact Score: 100.0%
+
+EF_3:
+  Question: Using the Base Rate and the applicable Mandatory Hurricane Deductible Factor, ca...
+  Exact Match: False
+  Keyword Coverage: 100.0%
+  Number Match: 100.0%
+  Completeness: 100.0%
+  Source Citation: 100.0%
+  Calculation Correct: True
+
+================================================================================
