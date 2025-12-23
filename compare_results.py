@@ -149,7 +149,7 @@ def check_ef3(predicted: str, expected: str) -> dict:
 def main():
     project_root = Path(__file__).parent
     questions_file = project_root / "artifacts" / "questions.csv"
-    results_file = project_root / "artifacts" / "questions_results.csv"
+    results_file = project_root / "results_evaluation" / "questions_results.csv"
     
     # Read files
     questions_df = pd.read_csv(questions_file)

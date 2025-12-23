@@ -551,9 +551,9 @@ def main():
     # Paths
     base_dir = Path(__file__).resolve().parents[2]
     questions_csv = str(base_dir / "artifacts" / "questions.csv")
-    results_csv = str(base_dir / "artifacts" / "questions_results.csv")
-    output_csv = str(base_dir / "artifacts" / "evaluation_results.csv")
-    report_path = str(base_dir / "artifacts" / "evaluation_report.txt")
+    results_csv = str(base_dir / "results_evaluation" / "questions_results.csv")
+    output_csv = str(base_dir / "results_evaluation" / "evaluation_results.csv")
+    report_path = str(base_dir / "results_evaluation" / "evaluation_report.txt")
     
     print(f"\nEvaluating from: {questions_csv}")
     if Path(results_csv).exists():

@@ -55,17 +55,18 @@ MD_docs/
 extracted_tables/
 *.csv
 !artifacts/questions.csv
-!artifacts/questions_results.csv
-!artifacts/evaluation_results.csv
+!results_evaluation/questions_results.csv
+!results_evaluation/evaluation_results.csv
 
 # Artifacts (keep structure but ignore large files)
 artifacts/*.pdf
 artifacts/*.json
 artifacts/*.txt
 !artifacts/questions.csv
-!artifacts/questions_results.csv
-!artifacts/evaluation_results.csv
-!artifacts/evaluation_report.txt
+
+# Evaluation results (keep these files)
+!results_evaluation/*.csv
+!results_evaluation/*.txt
 
 # Processing logs
 processing_log.txt
