@@ -1,6 +1,6 @@
 # Zesty RAG Assignment
 
-A production-ready RAG (Retrieval-Augmented Generation) system for analyzing insurance regulatory PDFs with mixed structured and unstructured content.
+An MVP (Minimum Viable Product) RAG (Retrieval-Augmented Generation) system for analyzing insurance regulatory PDFs with mixed structured and unstructured content. This solution is designed for testing and evaluation purposes, demonstrating hybrid retrieval capabilities for complex regulatory document queries.
 
 ## Overview
 
