@@ -175,6 +175,19 @@ def main() -> None:
     project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
     if not project_id:
         raise RuntimeError("Missing GOOGLE_CLOUD_PROJECT environment variable.")
+    
+    # Verify GCP authentication
+    try:
+        from src.utils.auth_helper import verify_gcp_auth, print_auth_setup_instructions
+        is_valid, error_msg = verify_gcp_auth(project_id)
+        if not is_valid:
+            print(f"\n❌ GCP Authentication Error:\n{error_msg}\n")
+            print_auth_setup_instructions()
+            raise RuntimeError(f"GCP authentication failed: {error_msg}")
+        # Success message is printed by verify_gcp_auth if default key is used
+    except ImportError:
+        # auth_helper not available, skip verification
+        pass
 
     base_dir = Path(__file__).resolve().parent
     dataset_name = "rag_dataset"

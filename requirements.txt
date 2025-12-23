@@ -6,30 +6,41 @@ langchain-text-splitters>=1.1.0  # Required for RecursiveCharacterTextSplitter
 langchain-core>=1.2.1
 
 # PDF and document processing
-unstructured[all-docs]>=0.18.0
-llama-index>=0.14.0
-llama-parse>=0.6.0  # High-accuracy table extraction (>99% accuracy)
+unstructured[all-docs]>=0.18.0  # Text extraction from PDFs
+llama-index>=0.14.0  # LlamaIndex framework (required by llama-parse)
+llama-parse>=0.6.0  # High-accuracy table extraction (>99% accuracy) - requires LLAMA_CLOUD_API_KEY
 
 # Data processing
-pandas>=2.2.0
-pyarrow>=22.0.0
+pandas>=2.2.0  # DataFrame manipulation
+pyarrow>=22.0.0  # Required for BigQuery integration
 tabulate>=0.9.0  # Required for pandas DataFrame.to_markdown()
-pandas-gbq>=0.26.1  # Future requirement for BigQuery DataFrame loading (silences pandas_gbq warning)
+pandas-gbq>=0.26.1  # Required for BigQuery DataFrame loading (silences pandas_gbq warning)
 
 # Google Cloud Platform
-google-cloud-bigquery>=3.38.0
-google-cloud-aiplatform>=1.130.0
+google-cloud-bigquery>=3.38.0  # BigQuery client for structured data storage
+google-cloud-aiplatform>=1.130.0  # Vertex AI for embeddings and LLM
 google-cloud-storage>=2.19.0  # Required by langchain-google-vertexai
 
 # Retrieval and ranking
-flashrank>=0.2.10
+flashrank>=0.2.10  # Optional: Reranking for semantic search (will skip if unavailable)
 
 # Evaluation
-ragas>=0.4.1
-datasets>=4.4.0
+ragas>=0.4.1  # Optional: Advanced RAG evaluation metrics
+datasets>=4.4.0  # Required by ragas
 
 # Utilities
-python-dotenv>=1.0.0
+python-dotenv>=1.0.0  # Environment variable management from .env file
 
 # Optional: langchain-google-genai (installed but not used - kept for reference)
 # langchain-google-genai>=4.0.0  # Alternative to langchain-google-vertexai for Gemini Developer API
+
+# Python Version Requirements
+# This project requires Python 3.10 or higher
+# Tested with Python 3.10, 3.11, 3.12
+
+# Installation Notes:
+# 1. Install dependencies: pip install -r requirements.txt
+# 2. Set up environment variables (see README.md for details):
+#    - GOOGLE_CLOUD_PROJECT: Your GCP project ID
+#    - LLAMA_CLOUD_API_KEY: Your LlamaParse API key (for PDF parsing)
+# 3. Configure GCP authentication (see README.md for options)

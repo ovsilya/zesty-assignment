@@ -59,10 +59,8 @@ extracted_tables/
 !results_evaluation/questions_results.csv
 !results_evaluation/evaluation_results.csv
 
-# Artifacts (keep structure but ignore large files)
-artifacts/*.pdf
-artifacts/*.json
-artifacts/*.txt
+# Artifacts (exclude all files except questions.csv)
+artifacts/*
 !artifacts/questions.csv
 
 # Evaluation results (keep these files)
