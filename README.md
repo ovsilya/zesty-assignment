@@ -263,259 +263,6 @@ For a complete breakdown of evaluation metrics, see:
 └── README.md                # This file
 ```
 
-**Note:** The following directories are excluded from version control (see `.gitignore`):
-- `debug_scripts/` - Debugging and investigation scripts
-- `scripts/` - Utility/testing scripts (not part of main pipeline)
-- `test_results/` - Test output files
-- `extracted_tables/` - Extracted CSV files
-- `MD_docs/` - Historical documentation
-
-## Installation and Setup
-
-### Prerequisites
-
-1. **Python 3.10 or higher**
-   ```bash
-   python3 --version  # Should be 3.10+
-   ```
-
-2. **Google Cloud Project** with the following APIs enabled:
-   - BigQuery API
-   - Vertex AI API
-   - Cloud Storage API (required by langchain-google-vertexai)
-
-3. **LlamaParse API Key** (for PDF parsing)
-   - Sign up at [LlamaCloud](https://cloud.llamaindex.ai/)
-   - Generate an API key from your dashboard
-
-### Step 1: Clone and Install Dependencies
-
-```bash
-# Clone the repository
-git clone https://github.com/ovsilya/zesty-assignment.git
-cd zesty-assignment
-
-# Create a virtual environment (recommended)
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Step 2: Configure Authentication
-
-#### Google Cloud Platform (GCP) Authentication
-
-The project uses **Application Default Credentials (ADC)** for GCP authentication. You have three options:
-
-**Option A: Service Account Key (Recommended for reviewers/shared access)**
-
-> 📖 **Detailed Instructions**: See [SERVICE_ACCOUNT_SETUP.md](SERVICE_ACCOUNT_SETUP.md) for a complete step-by-step guide with both CLI and Console methods.
-
-This option allows you to share access to your GCP project with reviewers without them needing their own GCP account.
-
-**Method 1: Using gcloud CLI (Recommended)**
-
-1. **Create a service account:**
-   ```bash
-   gcloud iam service-accounts create rag-service-account \
-     --display-name="RAG Service Account" \
-     --description="Service account for RAG system access"
-   ```
-
-2. **Grant necessary permissions:**
-   ```bash
-   # Replace YOUR_PROJECT_ID with your actual GCP project ID
-   PROJECT_ID="YOUR_PROJECT_ID"
-   SERVICE_ACCOUNT="rag-service-account@${PROJECT_ID}.iam.gserviceaccount.com"
-   
-   # Grant BigQuery Admin role
-   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-     --member="serviceAccount:${SERVICE_ACCOUNT}" \
-     --role="roles/bigquery.admin"
-   
-   # Grant Vertex AI User role
-   gcloud projects add-iam-policy-binding ${PROJECT_ID} \
-     --member="serviceAccount:${SERVICE_ACCOUNT}" \
-     --role="roles/aiplatform.user"
-   ```
-
-3. **Create and download a key:**
-   ```bash
-   gcloud iam service-accounts keys create service-account-key.json \
-     --iam-account=${SERVICE_ACCOUNT}
-   ```
-   
-   **Important:** This creates a JSON key file. Store it securely and **never commit it to git**.
-
-4. **Share the key file securely with reviewers:**
-   - Send via secure channel (encrypted email, secure file sharing, etc.)
-   - Instruct reviewers to store it outside the repository
-
-5. **Set the environment variable (for reviewers):**
-   ```bash
-   # Option 1: Set in shell (temporary)
-   export GOOGLE_APPLICATION_CREDENTIALS="path/to/service-account-key.json"
-   
-   # Option 2: Add to .env file (recommended)
-   # Add this line to .env:
-   GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account-key.json
-   ```
-
-**Method 2: Using GCP Console (Web UI)**
-
-1. **Go to GCP Console:**
-   - Navigate to [GCP Console](https://console.cloud.google.com/)
-   - Select your project
-
-2. **Create Service Account:**
-   - Go to **IAM & Admin** → **Service Accounts**
-   - Click **+ CREATE SERVICE ACCOUNT**
-   - Service account name: `rag-service-account`
-   - Service account ID: `rag-service-account` (auto-filled)
-   - Description: `Service account for RAG system access`
-   - Click **CREATE AND CONTINUE**
-
-3. **Grant Roles:**
-   - Click **ADD ANOTHER ROLE**
-   - Add role: **BigQuery Admin** (`roles/bigquery.admin`)
-   - Click **ADD ANOTHER ROLE** again
-   - Add role: **Vertex AI User** (`roles/aiplatform.user`)
-   - Click **CONTINUE** → **DONE**
-
-4. **Create Key:**
-   - Click on the service account you just created
-   - Go to **KEYS** tab
-   - Click **ADD KEY** → **Create new key**
-   - Select **JSON** format
-   - Click **CREATE**
-   - The JSON key file will download automatically
-
-5. **Share the key file securely** (same as Method 1, step 4)
-
-6. **Set environment variable** (same as Method 1, step 5)
-
-**Option B: gcloud CLI Authentication (For local development)**
-```bash
-gcloud auth application-default login
-```
-
-**Option C: Compute Engine Service Account (If running on GCP)**
-- Automatically uses the service account attached to the compute resource
-
-#### LlamaParse API Key
-
-Set the environment variable:
-```bash
-export LLAMA_CLOUD_API_KEY="your-llamaparse-api-key"
-```
-
-### Step 3: Create Environment File
-
-Create a `.env` file in the project root:
-
-```bash
-# Required: Google Cloud Project ID
-GOOGLE_CLOUD_PROJECT=zesty-481316
-
-# Required: LlamaParse API Key (for PDF parsing)
-LLAMA_CLOUD_API_KEY=your-llamaparse-api-key
-
-# Optional: Service Account Key Path
-# The code will automatically use zesty-*.json in the project root if available
-# To use a different key file, uncomment and set:
-# GOOGLE_APPLICATION_CREDENTIALS=path/to/service-account-key.json
-
-# Optional: Force reprocess all PDFs (set to "1", "true", or "yes")
-# FORCE_REPROCESS=0
-```
-
-**Important Notes:**
-- The `.env` file is automatically ignored by git (see `.gitignore`)
-- **Default Service Account Key**: The code automatically detects and uses `zesty-*.json` files in the project root
-  - If `zesty-481316-f5efb1098d47.json` exists, it will be used automatically
-  - No need to set `GOOGLE_APPLICATION_CREDENTIALS` if using the default key
-- **For Reviewers**: Use the service account key file shared by the project owner, or set `GOOGLE_APPLICATION_CREDENTIALS` to point to your own key file
-- **Security**: Service account key files (`*.json`) are automatically excluded from git via `.gitignore`
-
-### Step 4: Verify Setup
-
-The scripts will automatically verify GCP authentication when you run them. You can also test manually:
-
-```bash
-# Test GCP authentication (will show helpful errors if misconfigured)
-python3 -c "
-from dotenv import load_dotenv
-import os
-load_dotenv()
-try:
-    from src.utils.auth_helper import verify_gcp_auth
-    is_valid, error = verify_gcp_auth(os.getenv('GOOGLE_CLOUD_PROJECT'))
-    if is_valid:
-        print('✓ GCP authentication verified')
-    else:
-        print(f'❌ {error}')
-except ImportError:
-    # Fallback if auth_helper not available
-    from google.cloud import bigquery
-    print('✓ GCP connection OK')
-"
-
-# Test environment variables
-python3 -c "
-import os
-from dotenv import load_dotenv
-load_dotenv()
-print('Project:', os.getenv('GOOGLE_CLOUD_PROJECT'))
-print('LlamaParse key set:', bool(os.getenv('LLAMA_CLOUD_API_KEY')))
-print('Service account key:', os.getenv('GOOGLE_APPLICATION_CREDENTIALS', 'Not set (using default credentials)'))
-"
-```
-
-### Step 5: Prepare PDF Documents
-
-Place your PDF files in the following directories:
-- `artifacts/1/` - Motorcycle filings (or any category 1 PDFs)
-- `artifacts/2/` - Homeowner filings (or any category 2 PDFs)
-
-**Note:** The `artifacts/` directory is excluded from git. You'll need to add your PDFs locally.
-
-### Step 6: Build Indices
-
-Run the indexing pipeline to process PDFs and build the RAG indices:
-
-```bash
-python3 build_indices.py
-```
-
-This will:
-- Parse all PDFs in `artifacts/1/` and `artifacts/2/`
-- Extract text, tables, and charts
-- Build DOC Index (vector store) in BigQuery
-- Store FACTS tables in BigQuery
-- Save extracted tables as CSV files in `extracted_tables/`
-
-**Expected time:** ~1-2 hours for 40 PDFs (depends on PDF size and complexity)
-
-### Troubleshooting
-
-**"Missing GOOGLE_CLOUD_PROJECT" error:**
-- Ensure `.env` file exists and contains `GOOGLE_CLOUD_PROJECT=your-project-id`
-- Or set the environment variable: `export GOOGLE_CLOUD_PROJECT=your-project-id`
-
-**"LLAMA_CLOUD_API_KEY not set" error:**
-- Add `LLAMA_CLOUD_API_KEY=your-key` to `.env` file
-- Or set the environment variable: `export LLAMA_CLOUD_API_KEY=your-key`
-
-**"Permission denied" errors:**
-- Verify your service account has `roles/bigquery.admin` and `roles/aiplatform.user`
-- Check that the service account key file path is correct
-
-**"BigQuery dataset not found" error:**
-- The dataset `rag_dataset` will be created automatically on first run
-- Ensure your service account has BigQuery admin permissions
-
 ## For Reviewers
 
 ### Quick Start Guide
@@ -547,7 +294,7 @@ If you're reviewing this project, follow these steps to get started:
    # LLAMA_CLOUD_API_KEY=your-llamaparse-api-key
    ```
 
-5. **Test the system:**
+5. **Run the system:**
    ```bash
    # If indices are already built, you can query directly:
    python3 query_rag.py "List all rating plan rules"
@@ -562,12 +309,11 @@ If you're reviewing this project, follow these steps to get started:
 - **LlamaParse API Key**: Free tier available at [LlamaCloud](https://cloud.llamaindex.ai/)
 - **PDF Documents**: Not included in repository (place in `artifacts/1/` and `artifacts/2/` if building indices)
 
-### Notes for Reviewers
+### Notes
 
 - The service account key file (`zesty-*.json`) is automatically detected if placed in the project root
 - All sensitive files (`.env`, `*.json`) are excluded from git
 - The system automatically verifies authentication before running
-- See [Installation and Setup](#installation-and-setup) section for detailed instructions
 
 ## Usage
 
@@ -599,7 +345,7 @@ python3 src/evaluation/evaluate.py
 
 ## Development Journey
 
-See [RAG_DEVELOPMENT_JOURNEY.md](RAG_DEVELOPMENT_JOURNEY.md) for detailed documentation of:
+See [RAG Development Journey](GenAI_Prompts/RAG_DEVELOPMENT_JOURNEY.md) for detailed documentation of:
 - Thought process and reasoning
 - Development phases
 - Key technical decisions
@@ -607,10 +353,20 @@ See [RAG_DEVELOPMENT_JOURNEY.md](RAG_DEVELOPMENT_JOURNEY.md) for detailed docume
 
 ## Documentation
 
-- [RAG Development Journey](RAG_DEVELOPMENT_JOURNEY.md) - Complete development story
-- [Unified Architecture](MD_docs/unified_architecture.md) - Architecture design
-- [Evaluation Framework](src/evaluation/evaluate.py) - Evaluation metrics and methods
+### Core Modules
 
-## License
+- **[PDF Parsing](src/parsing/README.md)** - LlamaParse and Unstructured integration for extracting text, tables, and charts from PDFs
+- **[Indexing](src/indexing/README.md)** - Building DOC Index (vector store) and FACTS Store (BigQuery tables)
+- **[Retrieval](src/retrieval/)** - RAG agent with hybrid retrieval (semantic + structured)
+- **[Evaluation](src/evaluation/evaluate.py)** - Comprehensive evaluation framework with custom and RAGAS metrics
 
-This project is part of a technical assignment.
+### Architecture and Design
+
+- **[RAG Development Journey](GenAI_Prompts/RAG_DEVELOPMENT_JOURNEY.md)** - Complete development story and decision-making process
+- **[Unified Architecture](GenAI_Prompts/unified_architecture.md)** - System architecture design
+- **[Engineering the Indices](GenAI_Prompts/Engineering%20the%20Indices%20–%20Design%20&%20Th.md)** - Detailed design document for index creation
+
+### Execution and Evaluation
+
+- **[Script Execution Flow](SCRIPT_EXECUTION_FLOW.md)** - Detailed script execution flow and dependencies
+- **[Evaluation Metrics](results_evaluation/EVALUATION_METRICS.md)** - Explanation of all evaluation metrics used
