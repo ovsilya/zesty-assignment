@@ -1,0 +1,15 @@
+# Ensure consistent line endings
+* text=auto
+
+# Markdown files
+*.md text eol=lf
+
+# Python files
+*.py text eol=lf
+
+# CSV files
+*.csv text eol=lf
+
+# Text files
+*.txt text eol=lf
+
