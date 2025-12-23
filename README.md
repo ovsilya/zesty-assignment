@@ -242,9 +242,14 @@ For a complete breakdown of evaluation metrics, see:
 │   │   ├── rag_agent.py      # Main RAG agent orchestrator
 │   │   ├── retrieval_logic.py # Core retrieval algorithms
 │   │   ├── utils.py          # Utility functions
-│   │   └── prompt_template_v2.txt  # LLM prompt template
-│   └── evaluation/          # Evaluation framework
-│       ├── evaluate.py       # Comprehensive evaluation metrics
+│   │   ├── prompt_template_v2.txt  # LLM prompt template (generic)
+│   │   ├── prompt_template.txt     # LLM prompt template (original)
+│   │   └── README.md         # Retrieval module documentation
+│   ├── evaluation/          # Evaluation framework
+│   │   ├── evaluate.py       # Comprehensive evaluation metrics
+│   │   └── __init__.py
+│   └── utils/               # Shared utilities
+│       ├── auth_helper.py   # GCP authentication verification
 │       └── __init__.py
 ├── artifacts/               # Input data and questions
 │   ├── 1/                   # PDF folder 1 (motorcycle filings)
@@ -256,9 +261,14 @@ For a complete breakdown of evaluation metrics, see:
 │   ├── evaluation_results.csv     # Detailed metrics
 │   ├── evaluation_report.txt      # Summary report
 │   └── EVALUATION_METRICS.md      # Metrics documentation
-├── GenAI_Prompts/           # Architecture and design prompts
+├── GenAI_Prompts/           # Architecture and design documentation
+│   ├── RAG_DEVELOPMENT_JOURNEY.md
+│   ├── unified_architecture.md
+│   └── Engineering the Indices – Design & Th.md
 ├── build_indices.py         # Main indexing pipeline script
 ├── query_rag.py             # RAG query script (interactive/batch)
+├── SCRIPT_EXECUTION_FLOW.md # Detailed script execution flow
+├── .env.example             # Environment variables template
 ├── requirements.txt         # Python dependencies
 └── README.md                # This file
 ```
